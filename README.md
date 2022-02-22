@@ -1,70 +1,209 @@
-# Getting Started with Create React App
+![Logo](https://media-exp1.licdn.com/dms/image/C4E0BAQEGRUqgFXnmEg/company-logo_200_200/0/1640233288401?e=1653523200&v=beta&t=ZTAjv2IvQcmTxwtVFceBMMah4_N5Rsby4_YQteVE2JM)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# vibebees-dynamic-login
 
-## Available Scripts
+vibebees-dynamic-login provides functional login and signup UI component for React App. It has ibbuilt validator for input validation.
 
-In the project directory, you can run:
+## Installation
 
-### `npm start`
+Install vibebees-dynamic-login with npm
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+  npm install vibebees-dynamic-login
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Install vibebees-dynamic-login with yarn
 
-### `npm test`
+```bash
+  yarn add vibebees-dynamic-login
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Props
 
-### `npm run build`
+| Props           | Default |
+| --------------- | ------- |
+| Inputfield      | [ ]     |
+| type            | null    |
+| SuccessResponse | null    |
+| ErrorResponse   | null    |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Inputfield
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Inputfield is must require props which define different properties of input feilds.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+  const Inputfield = [
+  {
+    name: "username",
+    placeholder: "Username",
+    type: "text",
+    character: 4,
+    require: true,
+  },
+  {
+    name: "email",
+    placeholder: "Email",
+    type: "text",
+    require: true,
+  },
+  {
+    name: "password",
+    placeholder: "Password",
+    type: "password",
+    character: 8,
+    require: true,
+  },
+];
+```
 
-### `npm run eject`
+#### name
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+name is one of the key of an object which define name of input feilds.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+  name:"username"
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+#### placeholder
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+placeholder is one of the key of an object which define placeholder of input feilds.
 
-## Learn More
+```bash
+  placeholder:"username"
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### type
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+type is one of the key of an object which define type of input feilds.
 
-### Code Splitting
+```bash
+  type:"text"
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### require
 
-### Analyzing the Bundle Size
+require is one of the key of an object which define either the input feilds is require or not.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+  require: true
+```
 
-### Making a Progressive Web App
+### character
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+character is one of the key of an object which define number of require character of input feilds.
 
-### Advanced Configuration
+```bash
+  character: 4
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## type
 
-### Deployment
+type is props which define either the component is login or signup.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```bash
+  type="register"
+```
 
-### `npm run build` fails to minify
+## SuccessResponse
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+SuccessResponse is a function which define all the activities done after successfull api call.
+
+```bash
+  SuccessResponse={SuccessResponse}
+```
+
+## ErrorResponse
+
+ErrorResponse is a function which handle error after bad request.
+
+```bash
+  ErrorResponse={ErrorResponse}
+```
+
+## Example
+
+```javascript
+import "./App.css";
+import React from "react";
+import Login from "vibebees-dynamic-login/dist/components/Login";
+
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+  from,
+} from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+
+const errorLink = onError(({ graphqlErrors, networkError }) => {
+  if (graphqlErrors) {
+    graphqlErrors.map(({ message, location, path }) => {
+      alert(`Graphql error ${message}`);
+      return null;
+    });
+  }
+});
+
+const link = from([
+  errorLink,
+  new HttpLink({ uri: "https://api.spacex.land/graphql/" }),
+]);
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: link,
+});
+
+const Inputfield = [
+  {
+    name: "username",
+    placeholder: "Username",
+    type: "text",
+    character: 4,
+    require: true,
+  },
+  {
+    name: "email",
+    placeholder: "Email",
+    type: "text",
+    require: true,
+  },
+  {
+    name: "password",
+    placeholder: "Password",
+    type: "password",
+    character: 8,
+    require: true,
+  },
+];
+
+function App() {
+  const SuccessResponse = (res) => {
+    window.location.href = "/home";
+  };
+  const ErrorResponse = (err) => {
+    window.location.href = "/home";
+  };
+
+  return (
+    <ApolloProvider client={client}>
+      <div className="App ">
+        <Login
+          Inputfield={Inputfield}
+          path={"https://warm-badlands-28984.herokuapp.com/api/user/register"}
+          type="register"
+          SuccessResponse={SuccessResponse}
+          ErrorResponse={ErrorResponse}
+        />
+      </div>
+    </ApolloProvider>
+  );
+}
+
+export default App;
+```
+
+## Authors
+
+- [@NabinKharel](https://github.com/Navin-git)
